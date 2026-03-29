@@ -88,7 +88,6 @@ const getLocationFromIP = (req) => {
 };
 
 const signup = async (req, res, next) => {
-  let photo;
   try {
     const result = validationResult(req);
 
@@ -130,30 +129,32 @@ const signup = async (req, res, next) => {
     await session.commitTransaction();
     session.endSession();
 
-    const link = process.env.FRONTEND_URL;
+    if (process.env.NODE_ENV !== 'test') {
+      const link = process.env.FRONTEND_URL;
 
-    const signupHtmlTemplate = path.join(templatesDir, 'signup.html');
-    const signupTextTemplate = path.join(templatesDir, 'signup.txt');
+      const signupHtmlTemplate = path.join(templatesDir, 'signup.html');
+      const signupTextTemplate = path.join(templatesDir, 'signup.txt');
 
-    let signupHtml = fs.readFileSync(signupHtmlTemplate, 'utf-8');
-    let signupText = fs.readFileSync(signupTextTemplate, 'utf-8');
+      let signupHtml = fs.readFileSync(signupHtmlTemplate, 'utf-8');
+      let signupText = fs.readFileSync(signupTextTemplate, 'utf-8');
 
-    signupHtml = signupHtml.replace(
-      '[FIRST_NAME] [LAST_NAME]',
-      `${req.body.firstName} ${req.body.lastName}`
-    );
-    signupText = signupText
-      .replace('[FIRST_NAME]', req.body.lastName)
-      .replace('[LAST_NAME]', req.body.firstName)
-      .replace('[LINK]', link);
+      signupHtml = signupHtml.replace(
+        '[FIRST_NAME] [LAST_NAME]',
+        `${req.body.firstName} ${req.body.lastName}`,
+      );
+      signupText = signupText
+        .replace('[FIRST_NAME]', req.body.lastName)
+        .replace('[LAST_NAME]', req.body.firstName)
+        .replace('[LINK]', link);
 
-    await transporter.sendMail({
-      from: 'noreply.env <noreply.envv@gmail.com>',
-      to: `${req.body.email}`,
-      subject: `Welcome, ${req.body.firstName}!`,
-      text: signupText,
-      html: signupHtml,
-    });
+      await transporter.sendMail({
+        from: 'noreply.env <noreply.envv@gmail.com>',
+        to: `${req.body.email}`,
+        subject: `Welcome, ${req.body.firstName}!`,
+        text: signupText,
+        html: signupHtml,
+      });
+    }
 
     res.status(201).json(newMember);
   } catch (error) {
@@ -345,6 +346,13 @@ const filterMember = async (req, res, next) => {
 
 const updateMember = async (req, res, next) => {
   try {
+    if (!req.verifiedMember) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    if (req.verifiedMember._id.toString() !== req.params.id) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
     const { id } = req.params;
 
     const result = validationResult(req);
@@ -442,7 +450,7 @@ const resetPassword = async (req, res, next) => {
 
     ResetPasswordHtml = ResetPasswordHtml.replace(
       '[FIRST_NAME] [LAST_NAME]',
-      `${foundMember.firstName} ${foundMember.lastName}`
+      `${foundMember.firstName} ${foundMember.lastName}`,
     ).replace('[LINK]', link);
     ResetPasswordText = ResetPasswordText.replace('[FIRST_NAME]', foundMember.lastName)
       .replace('[LAST_NAME]', foundMember.firstName)

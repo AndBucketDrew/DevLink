@@ -5,7 +5,6 @@ import { Friend } from '../models/friends.js';
 import HttpError from '../models/http-error.js';
 import { matchedData, validationResult } from 'express-validator';
 import { getRecieverSocketId } from '../common/socket.js';
-import { Notification } from '../models/notifications.js';
 import { Message } from '../models/messages.js';
 import { createNotification } from './notifications.js';
 
@@ -34,7 +33,7 @@ const createPost = async (req, res, next) => {
 
     if (image) {
       const uploadResponse = await uploadImage(image.buffer, image.originalname);
-      (imageUrl = uploadResponse.url), (imageFileId = uploadResponse.fileId);
+      ((imageUrl = uploadResponse.url), (imageFileId = uploadResponse.fileId));
     }
 
     const post = await Post.create({
@@ -100,7 +99,6 @@ const addComment = async (req, res, next) => {
     }
 
     const data = matchedData(req);
- 
 
     const { text } = data;
     const postId = req.params.id;
@@ -171,7 +169,7 @@ const getMyPosts = async (req, res, next) => {
   try {
     const postsList = await Post.find({ author: memberId }).populate(
       'author',
-      'username firstName lastName photo'
+      'username firstName lastName photo',
     );
 
     res.json(postsList);
@@ -197,7 +195,6 @@ const getFriendsPosts = async (req, res, next) => {
 
     res.json(postsList);
   } catch (error) {
-
     return next(new HttpError(error, error.errorCode || 500));
   }
 };
@@ -210,7 +207,7 @@ const getMemberPosts = async (req, res, next) => {
 
     const postsList = await Post.find({ author: member._id }).populate(
       'author',
-      'username firstName lastName photo'
+      'username firstName lastName photo',
     );
 
     res.json(postsList);
@@ -255,7 +252,6 @@ export const sharePost = async (req, res) => {
 
 export const deletePost = async (req, res, next) => {
   try {
-  
     const deletedPost = await Post.findOneAndDelete({ _id: req.params.id });
     if (!deletedPost) {
       throw new HttpError('Member was not found', 404);

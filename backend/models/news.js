@@ -35,7 +35,7 @@ const NewsSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const News = mongoose.model('News', NewsSchema);

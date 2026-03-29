@@ -56,7 +56,7 @@ async function scheduleNews() {
 }
 
 const checkToken = async (req, res, next) => {
-  if (req.method === 'OPTONS') {
+  if (req.method === 'OPTIONS') {
     return next();
   }
 
@@ -69,10 +69,14 @@ const checkToken = async (req, res, next) => {
 
     const token = authorization.split(' ')[1];
 
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_KEY);
+    } catch (jwtError) {
+      throw new HttpError('Invalid or expired token', 401);
+    }
 
     const { id } = decoded;
-
     const member = await Member.findById(id);
 
     if (!member) {
@@ -80,10 +84,9 @@ const checkToken = async (req, res, next) => {
     }
 
     req.verifiedMember = member;
-
     next();
   } catch (error) {
-    return next(new HttpError(error, error.errorCode || 500));
+    return next(error instanceof HttpError ? error : new HttpError(error.message, 500));
   }
 };
 

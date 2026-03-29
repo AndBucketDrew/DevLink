@@ -13,14 +13,13 @@ import { checkToken } from '../common/middlewares.js';
 
 const router = Router();
 
-
 router.post('/add-friend/:id', checkToken, addFriend);
 
 router.get(
   '/pending',
   checkToken,
   body('recipient').escape().isLength({ min: 20, max: 30 }),
-  getPendingFriendRequests
+  getPendingFriendRequests,
 );
 
 router.get('/all-friends', checkToken, getAllFriends);
@@ -32,7 +31,7 @@ router.put(
   checkToken,
   check('senderId').isMongoId(),
   check('action').isIn(['accept', 'decline']),
-  manageFriendRequest
+  manageFriendRequest,
 );
 
 router.delete('/deleteFriend/:friendId', checkToken, deleteFriend);

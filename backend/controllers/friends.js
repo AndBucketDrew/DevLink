@@ -6,7 +6,6 @@ import { Friend } from '../models/friends.js';
 import { Notification } from '../models/notifications.js';
 import { createNotification } from './notifications.js';
 
-
 const addFriend = async (req, res, next) => {
   try {
     const result = validationResult(req);
@@ -50,8 +49,9 @@ const addFriend = async (req, res, next) => {
 
     res.json(recipientFriend);
   } catch (error) {
-    console.error("addFriend error:", error);
-    return next(new HttpError(error, 500));
+    console.error('addFriend error:', error);
+    if (error instanceof HttpError) return next(error); // ← preserve original error
+    return next(new HttpError(error.message || 'Server error', 500));
   }
 };
 
@@ -67,7 +67,7 @@ const deleteFriend = async (req, res, next) => {
     const updatedUserDocument = await Friend.findOneAndUpdate(
       { member: loggedInUser },
       { $pull: { friends: friendId } },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedUserDocument) {
@@ -77,7 +77,7 @@ const deleteFriend = async (req, res, next) => {
     const updatedFriendDocument = await Friend.findOneAndUpdate(
       { member: friendId },
       { $pull: { friends: loggedInUser } },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedFriendDocument) {
@@ -323,7 +323,6 @@ const manageFriendRequest = async (req, res, next) => {
         message: `${recipientMember.username} accepted your friend request`,
         type: 'friend_accept',
       });
-      
     } else {
       throw new HttpError('You must accept or decline', 422);
     }

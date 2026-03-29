@@ -30,14 +30,14 @@ router.post(
   body('email').isEmail().toLowerCase().normalizeEmail({ gmail_remove_dots: false }),
   body('password').isLength({ min: 6, max: 50 }),
   body('confirmPassword').isLength({ min: 6, max: 50 }),
-  signup
+  signup,
 );
 
 router.post(
   '/login',
   body('username').escape().notEmpty().withMessage('Username or email is required'),
   body('password').escape().notEmpty().withMessage('Password is required'),
-  login
+  login,
 );
 
 router.post('/reset-password', resetPassword);
@@ -45,12 +45,12 @@ router.post('/reset-password', resetPassword);
 router.post(
   '/set-new-password',
   body('password').escape().isLength({ min: 6, max: 50 }),
-  setNewPassword
+  setNewPassword,
 );
 
 router.get('/', getAllMembers);
 router.get('/username/:username', getMemberByUsername);
-router.get('/:id', getOneMember);
+router.get('/:id', checkToken, getOneMember);
 
 // Protected routes
 
@@ -60,7 +60,7 @@ router.patch(
   body('oldPassword').escape().isLength({ min: 6, max: 50 }),
   body('newPassword').escape().isLength({ min: 6, max: 50 }),
   body('confirmPassword').escape().isLength({ min: 6, max: 50 }),
-  changePassword
+  changePassword,
 );
 
 router.patch(
@@ -71,7 +71,7 @@ router.patch(
   body('lastName').trim().isLength({ min: 2, max: 50 }).optional(),
   body('username').trim().isLength({ min: 2, max: 50 }).optional(),
   body('email').trim().isLength({ min: 2, max: 50 }).optional(),
-  updateMember
+  updateMember,
 );
 
 router.delete('/:id', checkToken, deleteMember);

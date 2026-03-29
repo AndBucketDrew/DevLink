@@ -1,0 +1,25 @@
+{
+  "name": "lh-r",
+  "version": "1.0.0",
+  "description": "> **A Specialized Social Media Platform for Developers**\r > A full-stack networking environment built to bridge the gap between social interaction and technical collaboration.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndBucketDrew/LH-R.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AndBucketDrew/LH-R/issues"
+  },
+  "homepage": "https://github.com/AndBucketDrew/LH-R#readme",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}
