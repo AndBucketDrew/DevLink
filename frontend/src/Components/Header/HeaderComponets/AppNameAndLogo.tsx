@@ -21,7 +21,7 @@ export default function AppNameAndLogo() {
   return (
     <div className="font-poppins flex items-center gap-2 ">
       {/* Logo with Link */}
-      <button onClick={handleHomeClick}>
+      <button onClick={handleHomeClick} aria-label="go-to-home">
         <div className="flex justify-center items-center">
           <img src={Logo} alt="Logo" className="min-h-6 min-w-6 max-h-6 max-w-6 " />
         </div>

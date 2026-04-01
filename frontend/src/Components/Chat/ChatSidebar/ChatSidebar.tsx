@@ -36,17 +36,24 @@ const ChatSidebar = () => {
     };
   }, [fetchFriends, subscribeToMessages, unsubscribeFromMessages]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const safeFriends = Array.isArray(friends) ? friends : [];
+
   const filteredFriends = useMemo(() => {
     const query = searchQuery.toLowerCase();
-    return friends.filter((friend) =>
-      `${friend.firstName} ${friend.lastName} ${friend.username}`.toLowerCase().includes(query),
+    // Use safeFriends here instead of friends
+    return safeFriends.filter((friend) =>
+      `${friend?.firstName || ''} ${friend?.lastName || ''} ${friend?.username || ''}`
+        .toLowerCase()
+        .includes(query),
     );
-  }, [friends, searchQuery]);
+  }, [safeFriends, searchQuery]);
 
   const sortedFriends = useMemo(() => {
+    // Defensive check on lastMessages as well using optional chaining
     return [...filteredFriends].sort((a, b) => {
-      const timestampA = lastMessages[a._id]?.createdAt;
-      const timestampB = lastMessages[b._id]?.createdAt;
+      const timestampA = lastMessages?.[a._id]?.createdAt;
+      const timestampB = lastMessages?.[b._id]?.createdAt;
 
       const dateA = timestampA ? new Date(timestampA).getTime() : 0;
       const dateB = timestampB ? new Date(timestampB).getTime() : 0;
@@ -83,6 +90,7 @@ const ChatSidebar = () => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-zinc-400" />
           <input
+            key="chat-search-input"
             type="text"
             placeholder="Search contacts..."
             value={searchQuery}

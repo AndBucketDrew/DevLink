@@ -11,7 +11,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "esModuleInterop": true,
-    "types": ["jest", "node", "@testing-library/jest-dom"],
+    "types": ["jest", "node", "@testing-library/jest-dom", "cypress"],
     "paths": {
       "@/*": ["./src/*"]
     }

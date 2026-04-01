@@ -73,6 +73,7 @@ export default function Notifications() {
         <Button
           variant="ghost"
           size="icon"
+          aria-label="notifications-bell"
           className="relative hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           <BellIcon className="h-5 w-5" />
@@ -113,7 +114,7 @@ export default function Notifications() {
               onClick={() => handleNotificationClick(n)}
               className={cn(
                 'flex items-center gap-3 py-2 cursor-pointer',
-                !n.isRead ? 'bg-blue-50 dark:bg-gray-800' : ''
+                !n.isRead ? 'bg-blue-50 dark:bg-gray-800' : '',
               )}
             >
               <Avatar className="w-10 h-10">
