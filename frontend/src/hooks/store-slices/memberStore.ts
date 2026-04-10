@@ -429,8 +429,12 @@ export const createMemberSlice: StateCreator<StoreState, [], [], MemberStore> = 
       return;
     }
 
-    if (socket?.connected) {
-      get().subscribeToNotifications();
+    if (socket) {
+      if (socket.connected) {
+        get().subscribeToNotifications();
+      } else {
+        socket.connect();
+      }
       return;
     }
 
