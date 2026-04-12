@@ -18,7 +18,7 @@ const CONNECTION_STRING = `mongodb+srv://${process.env.MONGODB_USERNAME}:${proce
 
 const corsOptions = {
   // Allow your local machine AND your production frontend
-  origin: ['http://localhost:5173', 'https://dev-link-ruby.vercel.app', 'http://localhost:3000'],
+  origin: ['http://localhost:5173', 'http://localhost:3000', process.env.FRONTEND_URL],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 };
